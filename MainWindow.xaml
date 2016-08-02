@@ -1,0 +1,48 @@
+﻿<Window x:Class="AssistenteMigracao.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AssistenteMigracao"
+        mc:Ignorable="d"
+        Title="Assistente de atualização DOC-Windows 2017" Height="632.606" Width="1002.311" Background="#FF323232" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" FontSize="16" Loaded="Window_Loaded" WindowStyle="ToolWindow" Icon="refresh.ico" IsHitTestVisible="True">
+    <Grid Margin="0,1,0,-1" Initialized="Grid_Initialized">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Label x:Name="label" Content="Assistente de atualização do DOC-Windows" Margin="40.156,1,40.106,0" Foreground="#FFFDFDFD" Background="{x:Null}" FontSize="48" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Column="1" Height="74" Width="916.049" FontFamily="Segoe UI Light"/>
+        <ProgressBar x:Name="pgrTotal" Margin="0,0,2,49" Height="14" VerticalAlignment="Bottom" Background="{x:Null}" Grid.Column="1" BorderThickness="0,1" BorderBrush="#FF5A5A5A" ValueChanged="pgrTotal_ValueChanged">
+            <ProgressBar.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFC5CAD1" Offset="0.002"/>
+                    <GradientStop Color="#FF5B626E" Offset="1"/>
+                    <GradientStop Color="#FFDCE4F0" Offset="0.493"/>
+                </LinearGradientBrush>
+            </ProgressBar.Foreground>
+        </ProgressBar>
+        <ProgressBar x:Name="pgrIndeterminate" Height="12" VerticalAlignment="Bottom" Background="{x:Null}" BorderBrush="{x:Null}" SmallChange="1" Grid.ColumnSpan="2">
+            <ProgressBar.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFA49E9E" Offset="0"/>
+                    <GradientStop Color="#FF918C8C" Offset="1"/>
+                    <GradientStop Color="White" Offset="0.466"/>
+                </LinearGradientBrush>
+            </ProgressBar.Foreground>
+        </ProgressBar>
+        <Label x:Name="lblInfo" Content=" " Margin="5,0,5,17" Height="31" VerticalAlignment="Bottom" Foreground="White" Grid.Column="1"/>
+        <Button x:Name="btnIniciar" Content="Iniciar" Margin="413.648,247,413,0" Background="#FF3C3C3C" Foreground="White" FontSize="21.333" Height="84" VerticalAlignment="Top" Grid.Column="1" Click="btnIniciar_Click_1" FontFamily="Segoe UI Light"/>
+        <TextBox x:Name="lblHist" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="421" Margin="10,100,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="380" IsReadOnly="True" Background="{x:Null}" Foreground="White" BorderThickness="0"/>
+        <TextBox x:Name="txtFinalize" HorizontalAlignment="Left" Height="421" Margin="67.296,100,0,0" TextWrapping="Wrap" Text="A Migração dos dados foi finalizada com sucesso!!!&#xA;&#xA;Neste momento o banco de dados do DOC-Windows está instalado na versão 8.3 do postgres na porta 5432 e na versão 9.5 do postgres na porta 5433.&#xA;&#xA;• Instale a versão 2017 em uma estação, direcione para porta 5433 e verifique os dados migrados.&#xA;&#xA; Se os dados estiverem corretos você precisa:&#xA;→ Desinstalar a versão 8.3 do postgres.&#xA;→ Alterar o arquivo {SOURCEDIR}\data\postgresql.conf. Alterar a porta para 5432." VerticalAlignment="Top" Width="855" Background="{x:Null}" Foreground="White" FontSize="21.333" BorderThickness="0" Visibility="Hidden" Grid.Column="1"/>
+        <Grid x:Name="grdOpcoesPastas" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="185" Margin="412.648,336,0,0" VerticalAlignment="Top" Width="534.352">
+            <Label x:Name="label1" Content="Local da instalação da versão 2013 (Ex.: C:\DeMaria\BD)" HorizontalAlignment="Left" Margin="11,10,0,0" VerticalAlignment="Top" Foreground="White"/>
+            <Label x:Name="label1_Copy" Content="Local onde será instalada a versão 2017 (Ex.: C:\DeMaria\BD9.5)" HorizontalAlignment="Left" Margin="10,84,0,0" VerticalAlignment="Top" Foreground="White"/>
+            <TextBox x:Name="txtSource83" HorizontalAlignment="Left" Height="23" Margin="10,41.28,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="400.313" Foreground="White" Background="{x:Null}" FontSize="13.333"/>
+            <TextBox x:Name="txtSource95" HorizontalAlignment="Left" Height="23" Margin="10,115.28,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="400.313" Foreground="White" Background="{x:Null}" FontSize="13.333"/>
+            <Button x:Name="btnAlteraBD83" Content="Alterar" Margin="416.313,40.147,21.687,0" Background="#FF3C3C3C" Foreground="White" FontSize="13.333" Height="24" VerticalAlignment="Top" FontFamily="Segoe UI Light" Click="btnAlteraBD83_Click" RenderTransformOrigin="0.053,-5.208"/>
+            <Button x:Name="btnAlteraBD95" Content="Alterar" Margin="416.313,114.76,21.687,0" Background="#FF3C3C3C" Foreground="White" FontSize="13.333" Height="24" VerticalAlignment="Top" FontFamily="Segoe UI Light" Click="btnAlteraBD95_Click"/>
+        </Grid>
+        <Label x:Name="label1_Copy1" Content="ATENÇÃO: Certifique-se que o DOC-Windows esteja na no último release&#xD;&#xA;versão 2013." HorizontalAlignment="Left" Margin="413.648,153,0,0" VerticalAlignment="Top" Foreground="#FFFF6666" Grid.ColumnSpan="2" Height="60.28" Background="{x:Null}"/>
+
+    </Grid>
+</Window>
