@@ -375,7 +375,8 @@ namespace AssistenteMigracao
             foreach (string folder in Directory.GetDirectories(sourcePath))
             {
                 string dest = Path.Combine(destPath, Path.GetFileName(folder));
-                CopyDirectory(folder, dest);
+                if (!folder.Contains("PostgresSQL"))
+                    CopyDirectory(folder, dest);
             }
         }
 
@@ -570,6 +571,7 @@ namespace AssistenteMigracao
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+           // Title = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
         }
 
         private void pgrTotal_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
