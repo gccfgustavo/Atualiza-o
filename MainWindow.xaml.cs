@@ -84,9 +84,9 @@ namespace AssistenteMigracao
                 SetHist("Executando scrip de atualização da versão 2017...");
                 ProcessStartInfo psUser = new ProcessStartInfo();
                 psUser.FileName = SourcePath + "\\bin\\psql.exe";
-               
+
                 psUser.Arguments = $"-U postgres -d docwin -p5433 -L\"{fileTem + ".txt"}\" -f \"{fileTem}\"";
-               
+
 
                 SetHist("Iniciando...");
 
@@ -94,7 +94,7 @@ namespace AssistenteMigracao
                 SetHist("Executando...");
 
                 proRESTUsr.WaitForExit();
-                                           
+
                 proRESTUsr.Dispose();
 
                 Thread.Sleep(1000);
@@ -335,54 +335,13 @@ namespace AssistenteMigracao
                     SetHist(procGlobals.StandardError.ReadToEnd());
 
                 SetHist("Copiando pasta de backup...");
-
-                if (!Directory.Exists(SourcePath + "\\backup"))
-                {
-                    Directory.CreateDirectory(SourcePath + "\\backup");
-                    Directory.GetFiles(OdlPath + "\\backup").ToList().ForEach(f => File.Copy(f, SourcePath + "\\backup\\" + (new FileInfo(f)).Name, true));
-                }
+                CopyDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), SourcePath + "\\backup2");
 
                 if (!File.Exists(SourcePath + "\\backup\\7za.exe"))
                 {
                     SetHist($"O arquivo {SourcePath + "\\backup\\7za.exe"} não foi encontrado.");
                     return false;
                 }
-
-                //SetHist("Compactando arquivos...");
-                //ProcessStartInfo psiC = new ProcessStartInfo();
-                //psiC.FileName = SourcePath + "\\backup\\7za.exe";
-                //psiC.RedirectStandardOutput = false;
-
-                //SaveFileDialog sfdBackup = new SaveFileDialog();
-                //sfdBackup.DefaultExt = "csd";
-                //sfdBackup.FileName = "backupMigração8.3.csd";
-                //sfdBackup.Filter = "DOC-Backup(*.csd)|*.csd";
-                //sfdBackup.Title = "Salve a cópia de segurança em um local seguro";
-                //System.Windows.Forms.DialogResult dia = System.Windows.Forms.DialogResult.Cancel;
-
-                //Dispatcher.Invoke(new Action(() =>
-                //{
-                //    dia = sfdBackup.ShowDialog();
-                //}));
-
-                //if (dia == System.Windows.Forms.DialogResult.OK)
-                //{
-                //    psiC.Arguments = "a -y \"" + SourcePath + "\\backupMigração8.3.csd\" \"" + dir + "*.*\"";
-                //    psiC.UseShellExecute = false;
-                //    psiC.CreateNoWindow = true;
-                //    psiC.RedirectStandardError = true;
-
-                //    Process proCOMP = Process.Start(psiC);
-                //    proCOMP.WaitForExit();
-
-                //    if (proCOMP.ExitCode != 0)
-                //        return false;
-                //    else
-                //        File.Copy(SourcePath + "\\backupMigração8.3.csd", sfdBackup.FileName, true);
-
-                //}
-                //else
-                //    return false;
             }
             catch (Exception ex)
             {
@@ -398,6 +357,26 @@ namespace AssistenteMigracao
                 Environment.SetEnvironmentVariable("PGPASSWORD", string.Empty);
             }
             return true;
+        }
+
+        private static void CopyDirectory(string sourcePath, string destPath)
+        {
+            if (!Directory.Exists(destPath))
+            {
+                Directory.CreateDirectory(destPath);
+            }
+
+            foreach (string file in Directory.GetFiles(sourcePath))
+            {
+                string dest = Path.Combine(destPath, Path.GetFileName(file));
+                File.Copy(file, dest, true);
+            }
+
+            foreach (string folder in Directory.GetDirectories(sourcePath))
+            {
+                string dest = Path.Combine(destPath, Path.GetFileName(folder));
+                CopyDirectory(folder, dest);
+            }
         }
 
         private bool _Restore()
