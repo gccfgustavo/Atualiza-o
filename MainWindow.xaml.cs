@@ -52,17 +52,17 @@ namespace AssistenteMigracao
 
                 if (!InstalacaoPostgresSql())
                     CANCELA();
-                SetProgress(30);
-                if (!_BackupBD())
-                    CANCELA();
-                SetProgress(60);
-                if (!_Restore())
-                    CANCELA();
-                SetProgress(90);
-                if (!_ExecutaSql())
-                    CANCELA();
-                SetProgress(100);
-                CONCLUIDO();
+                else
+                {
+                    SetProgress(30);
+                    if (!_BackupBD() || !_Restore() || !_ExecutaSql())
+                        CANCELA();
+                    else
+                    {
+                        SetProgress(100);
+                        CONCLUIDO();
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -72,6 +72,8 @@ namespace AssistenteMigracao
 
         public bool _ExecutaSql()
         {
+            SetProgress(90);
+
             try
             {
                 string fileTem = Path.GetTempPath() + Path.GetFileNameWithoutExtension(Path.GetTempFileName()) + ".sql";
@@ -82,34 +84,17 @@ namespace AssistenteMigracao
                 SetHist("Executando scrip de atualização da versão 2017...");
                 ProcessStartInfo psUser = new ProcessStartInfo();
                 psUser.FileName = SourcePath + "\\bin\\psql.exe";
-               //psUser.RedirectStandardOutput = true;
+               
                 psUser.Arguments = $"-U postgres -d docwin -p5433 -L\"{fileTem + ".txt"}\" -f \"{fileTem}\"";
-               // psUser.UseShellExecute = false;
-               // psUser.CreateNoWindow = true;
-                //psUser.RedirectStandardError = true;
+               
 
-                SetHist("start...");
+                SetHist("Iniciando...");
 
                 Process proRESTUsr = Process.Start(psUser);
-                SetHist("agardando...");
+                SetHist("Executando...");
 
                 proRESTUsr.WaitForExit();
-
-                SetHist("cod " + proRESTUsr.ExitCode);
-
-                //if (proRESTUsr.ExitCode != 0)
-                //{
-                //    SetHist("entrou...");
-
-                //    Dispatcher.Invoke(new Action(() =>
-                //    {
-                //        System.Windows.MessageBox.Show(proRESTUsr.StandardError.ReadToEnd(), "Erro ao executar script", MessageBoxButton.OK, MessageBoxImage.Stop);
-                //    }));
-
-                //    SetHist("retornando...");
-
-                //    return false;
-                //}
+                                           
                 proRESTUsr.Dispose();
 
                 Thread.Sleep(1000);
@@ -172,6 +157,7 @@ namespace AssistenteMigracao
                 pgrIndeterminate.IsIndeterminate = false;
                 pgrTotal.Value = 0;
                 InstallPostgres.CancelAsync();
+                InstallPostgres.Dispose();
             });
         }
 
@@ -362,41 +348,41 @@ namespace AssistenteMigracao
                     return false;
                 }
 
-                SetHist("Compactando arquivos...");
-                ProcessStartInfo psiC = new ProcessStartInfo();
-                psiC.FileName = SourcePath + "\\backup\\7za.exe";
-                psiC.RedirectStandardOutput = false;
+                //SetHist("Compactando arquivos...");
+                //ProcessStartInfo psiC = new ProcessStartInfo();
+                //psiC.FileName = SourcePath + "\\backup\\7za.exe";
+                //psiC.RedirectStandardOutput = false;
 
-                SaveFileDialog sfdBackup = new SaveFileDialog();
-                sfdBackup.DefaultExt = "csd";
-                sfdBackup.FileName = "backupMigração8.3.csd";
-                sfdBackup.Filter = "DOC-Backup(*.csd)|*.csd";
-                sfdBackup.Title = "Salve a cópia de segurança em um local seguro";
-                System.Windows.Forms.DialogResult dia = System.Windows.Forms.DialogResult.Cancel;
+                //SaveFileDialog sfdBackup = new SaveFileDialog();
+                //sfdBackup.DefaultExt = "csd";
+                //sfdBackup.FileName = "backupMigração8.3.csd";
+                //sfdBackup.Filter = "DOC-Backup(*.csd)|*.csd";
+                //sfdBackup.Title = "Salve a cópia de segurança em um local seguro";
+                //System.Windows.Forms.DialogResult dia = System.Windows.Forms.DialogResult.Cancel;
 
-                Dispatcher.Invoke(new Action(() =>
-                {
-                    dia = sfdBackup.ShowDialog();
-                }));
+                //Dispatcher.Invoke(new Action(() =>
+                //{
+                //    dia = sfdBackup.ShowDialog();
+                //}));
 
-                if (dia == System.Windows.Forms.DialogResult.OK)
-                {
-                    psiC.Arguments = "a -y \"" + SourcePath + "\\backupMigração8.3.csd\" \"" + dir + "*.*\"";
-                    psiC.UseShellExecute = false;
-                    psiC.CreateNoWindow = true;
-                    psiC.RedirectStandardError = true;
+                //if (dia == System.Windows.Forms.DialogResult.OK)
+                //{
+                //    psiC.Arguments = "a -y \"" + SourcePath + "\\backupMigração8.3.csd\" \"" + dir + "*.*\"";
+                //    psiC.UseShellExecute = false;
+                //    psiC.CreateNoWindow = true;
+                //    psiC.RedirectStandardError = true;
 
-                    Process proCOMP = Process.Start(psiC);
-                    proCOMP.WaitForExit();
+                //    Process proCOMP = Process.Start(psiC);
+                //    proCOMP.WaitForExit();
 
-                    if (proCOMP.ExitCode != 0)
-                        return false;
-                    else
-                        File.Copy(SourcePath + "\\backupMigração8.3.csd", sfdBackup.FileName, true);
+                //    if (proCOMP.ExitCode != 0)
+                //        return false;
+                //    else
+                //        File.Copy(SourcePath + "\\backupMigração8.3.csd", sfdBackup.FileName, true);
 
-                }
-                else
-                    return false;
+                //}
+                //else
+                //    return false;
             }
             catch (Exception ex)
             {
@@ -416,6 +402,8 @@ namespace AssistenteMigracao
 
         private bool _Restore()
         {
+            SetProgress(60);
+
             try
             {
                 string dir = Path.GetTempPath() + "MigracaoDOC17\\";
@@ -531,6 +519,16 @@ namespace AssistenteMigracao
 
                         if (proRESTData.ExitCode != 0)
                             SetHist(proRESTData.StandardError.ReadToEnd());
+
+                        //Limpando informações de backup
+                        ProcessStartInfo psBackup = new ProcessStartInfo();
+                        psBackup.FileName = SourcePath + "\\bin\\psql.exe";
+                        psBackup.RedirectStandardOutput = true;
+                        psBackup.Arguments = $"-U postgres -d docwin -c \"ALTER DATABASE docwin SET search_path = docwin; UPDATE docwin.aux_preferencias_tb SET valor=NULL WHERE nome='lastbkpBD';\"";
+                        psBackup.UseShellExecute = false;
+                        psBackup.CreateNoWindow = false;
+                        psBackup.RedirectStandardError = true;
+                        Process proRESTUBKP = Process.Start(psBackup);
                     }
                 }
             }

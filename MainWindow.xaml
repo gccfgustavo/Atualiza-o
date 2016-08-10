@@ -42,7 +42,7 @@
             <Button x:Name="btnAlteraBD83" Content="Alterar" Margin="416.313,40.147,21.687,0" Background="#FF3C3C3C" Foreground="White" FontSize="13.333" Height="24" VerticalAlignment="Top" FontFamily="Segoe UI Light" Click="btnAlteraBD83_Click" RenderTransformOrigin="0.053,-5.208"/>
             <Button x:Name="btnAlteraBD95" Content="Alterar" Margin="416.313,114.76,21.687,0" Background="#FF3C3C3C" Foreground="White" FontSize="13.333" Height="24" VerticalAlignment="Top" FontFamily="Segoe UI Light" Click="btnAlteraBD95_Click"/>
         </Grid>
-        <Label x:Name="label1_Copy1" Content="ATENÇÃO: Certifique-se que o DOC-Windows esteja na no último release&#xD;&#xA;versão 2013." HorizontalAlignment="Left" Margin="413.648,153,0,0" VerticalAlignment="Top" Foreground="#FFFF6666" Grid.ColumnSpan="2" Height="60.28" Background="{x:Null}"/>
+        <Label x:Name="label1_Copy1" Content="ATENÇÃO: Certifique-se que o DOC-Windows esteja no último release&#xA;versão 2013." HorizontalAlignment="Left" Margin="413.648,153,0,0" VerticalAlignment="Top" Foreground="#FFFF6666" Grid.ColumnSpan="2" Height="60.28" Background="{x:Null}"/>
 
     </Grid>
 </Window>
